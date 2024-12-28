@@ -1,8 +1,10 @@
 package com.ecom.amazon.Entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.Nulls;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +16,12 @@ public class Product {
 
     private String title;
     private String description;
+
+    @Column(nullable = false)
+    private BigDecimal maximumSellingPrice;
+
+    @Column(nullable = false)
+    private BigDecimal price;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JsonManagedReference
@@ -28,6 +36,11 @@ public class Product {
     public void addAttribute(Attribute attribute){
         this.attributes.add(attribute);
         attribute.setProduct(this);
+    }
+
+    public void removeAttribute(Attribute attribute){
+        this.attributes.remove(attribute);
+        attribute.setProduct(null); // un-linking the relationship.
     }
 
     //Getters
@@ -52,6 +65,14 @@ public class Product {
         return vendor;
     }
 
+    public BigDecimal getMaximumSellingPrice() {
+        return maximumSellingPrice;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
     //Setters
 
     public void setTitle(String title) {
@@ -64,5 +85,13 @@ public class Product {
 
     public void setVendor(Vendor vendor) {
         this.vendor = vendor;
+    }
+
+    public void setMaximumSellingPrice(BigDecimal maximumSellingPrice) {
+        this.maximumSellingPrice = maximumSellingPrice;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 }

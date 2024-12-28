@@ -1,5 +1,6 @@
 package com.ecom.amazon.Entity;
 
+import com.ecom.amazon.Enum.ROLE;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -14,9 +15,13 @@ public class Vendor {
 
     private String name;
     private String email;
-    private String mobile;
+    @Column(nullable = false, unique = true) //nullable should place first.
+    private long mobile;
     private String password;
     private String gst;
+
+    @Enumerated(EnumType.STRING)
+    private ROLE role = ROLE.VENDOR;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JsonManagedReference
@@ -39,7 +44,7 @@ public class Vendor {
         return email;
     }
 
-    public String getMobile() {
+    public long getMobile() {
         return mobile;
     }
 
@@ -63,7 +68,7 @@ public class Vendor {
         this.email = email;
     }
 
-    public void setMobile(String mobile) {
+    public void setMobile(long mobile) {
         this.mobile = mobile;
     }
 

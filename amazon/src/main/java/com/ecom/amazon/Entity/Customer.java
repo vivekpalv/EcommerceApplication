@@ -1,5 +1,6 @@
 package com.ecom.amazon.Entity;
 
+import com.ecom.amazon.Enum.ROLE;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -32,6 +33,9 @@ public class Customer {
     @OneToOne(cascade = CascadeType.ALL)
     @JsonManagedReference
     private Wishlist wishlist;
+
+    @Enumerated(EnumType.STRING)
+    private ROLE role = ROLE.CUSTOMER;
 
     @PrePersist
     public void prePersist() {
@@ -85,6 +89,10 @@ public class Customer {
         return cart;
     }
 
+    public ROLE getRole() {
+        return role;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -120,6 +128,10 @@ public class Customer {
 
     public void setWishlist(Wishlist wishlist) {
         this.wishlist = wishlist;
+    }
+
+    public void setRole(ROLE role) {
+        this.role = role;
     }
 
     @Override

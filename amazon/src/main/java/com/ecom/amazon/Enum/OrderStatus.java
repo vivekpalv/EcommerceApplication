@@ -1,0 +1,12 @@
+package com.ecom.amazon.Enum;
+
+public enum OrderStatus {
+    PAYMENT_PENDING,
+    PAYMENT_RECEIVED,
+    ORDER_ACCEPTED_BY_VENDOR,
+    SHIPPED,
+    DELIVERED,
+    CANCELLED_BY_CUSTOMER,
+    CANCELLED_BY_VENDOR,
+    CANCELLED_BY_DELIVERY_PERSON
+}

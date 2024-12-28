@@ -2,6 +2,7 @@ package com.ecom.amazon.Authentication;
 
 import com.ecom.amazon.Authentication.AuthDTO.LoginCustomerDTO;
 import com.ecom.amazon.Authentication.AuthDTO.SignUpCustomerDTO;
+import com.ecom.amazon.Authentication.AuthDTO.SignUpVendorDTO;
 import com.ecom.amazon.Entity.Customer;
 import com.ecom.amazon.Service.CustomerService;
 import jakarta.validation.Valid;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 
 @RestController
+@RequestMapping("/authentication")
 public class Authentication {
 
     private final CustomerService customerService;
@@ -66,5 +68,19 @@ public class Authentication {
         }
 
         return ResponseEntity.ok(customer);
+    }
+
+    @PostMapping("/vendorSignUp")
+    public ResponseEntity<?> vendorSignUp(@Valid @RequestBody SignUpVendorDTO vendorDto, BindingResult result){
+
+        if (result.hasErrors()){
+            HashMap<String, Object> errorHashMap = new HashMap<>();
+            result.getFieldErrors().forEach(fieldError -> {errorHashMap.put(fieldError.getField(), fieldError.getDefaultMessage()); });
+            return ResponseEntity.badRequest().body(errorHashMap);
+        }
+
+        System.out.println("SignUpVendorDTO: " + vendorDto);
+
+        return ResponseEntity.ok("vendor created successfully");
     }
 }
