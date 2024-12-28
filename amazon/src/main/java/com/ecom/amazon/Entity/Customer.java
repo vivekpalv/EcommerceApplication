@@ -29,6 +29,10 @@ public class Customer {
     @JsonManagedReference
     private Cart cart;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Wishlist wishlist;
+
     @PrePersist
     public void prePersist() {
         Wallet wallet = new Wallet();
@@ -39,6 +43,10 @@ public class Customer {
         Cart cart = new Cart();
         cart.setCustomer(this);
         this.cart = cart;
+
+        Wishlist wishlist = new Wishlist();
+        wishlist.setCustomer(this);
+        this.wishlist = wishlist;
     }
 
     public long getId() {
@@ -104,6 +112,14 @@ public class Customer {
 
     public void setCart(Cart cart) {
         this.cart = cart;
+    }
+
+    public Wishlist getWishlist() {
+        return wishlist;
+    }
+
+    public void setWishlist(Wishlist wishlist) {
+        this.wishlist = wishlist;
     }
 
     @Override
