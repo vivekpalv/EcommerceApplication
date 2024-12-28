@@ -25,12 +25,20 @@ public class Customer {
     @JsonManagedReference
     private Wallet wallet;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Cart cart;
+
     @PrePersist
     public void prePersist() {
         Wallet wallet = new Wallet();
         wallet.setBalance(0);
         wallet.setCustomer(this);
         this.wallet = wallet;
+
+        Cart cart = new Cart();
+        cart.setCustomer(this);
+        this.cart = cart;
     }
 
     public long getId() {
@@ -65,6 +73,10 @@ public class Customer {
         return wallet;
     }
 
+    public Cart getCart() {
+        return cart;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -88,6 +100,10 @@ public class Customer {
     public void addAddress(Address address) {
         this.addresses.add(address);
         address.setCustomer(this);
+    }
+
+    public void setCart(Cart cart) {
+        this.cart = cart;
     }
 
     @Override
