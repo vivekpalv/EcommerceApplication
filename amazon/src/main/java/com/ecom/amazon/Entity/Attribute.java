@@ -1,7 +1,13 @@
 package com.ecom.amazon.Entity;
 
+import com.ecom.amazon.Entity.Embeded.AttributeField;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+
+import java.lang.reflect.Field;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Attribute {
@@ -9,28 +15,43 @@ public class Attribute {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    private String attributeKey;
-    private String attributeValue;
+    @ElementCollection
+    private List<AttributeField> fields = new ArrayList<>();
+
     @Column(nullable = false)
-    private double price;
+    private BigDecimal price;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JsonBackReference
     private Product product;
 
+    //Helper
+    public void addField(String fieldKey, String fieldValue){
+        AttributeField attributeField = new AttributeField(fieldKey, fieldValue);
+        this.fields.add(attributeField);
+    }
+
+    public boolean removeField(String fieldKey){
+//        this.fields.remove(attributeField);
+        return this.fields.removeIf(f -> f.getFieldKey().equals(fieldKey));
+    }
+
+    public boolean updateField(String fieldKey, String updatingValue){
+        for (AttributeField f : fields){
+            if (f.getFieldValue().equals(fieldKey)){
+                f.setFieldValue(updatingValue);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //Getters
     public long getId() {
         return id;
     }
 
-    public String getKey() {
-        return attributeKey;
-    }
-
-    public String getValue() {
-        return attributeValue;
-    }
-
-    public double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
@@ -38,15 +59,12 @@ public class Attribute {
         return product;
     }
 
-    public void setKey(String attributeKey) {
-        this.attributeKey = attributeKey;
+    public List<AttributeField> getFields() {
+        return fields;
     }
 
-    public void setValue(String value) {
-        this.attributeKey = value;
-    }
-
-    public void setPrice(double price) {
+    //Setters
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
