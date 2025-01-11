@@ -27,6 +27,18 @@ public class Vendor {
     @JsonManagedReference
     private List<Product> products = new ArrayList<>();
 
+    //No argument constructor
+    public Vendor() {
+    }
+
+    //argument constructor
+    public Vendor(String name, String email, long mobile, String password) {
+        this.name = name;
+        this.email = email;
+        this.mobile = mobile;
+        this.password = password;
+    }
+
     public void addProduct(Product product){
         this.products.add(product);
         product.setVendor(this);

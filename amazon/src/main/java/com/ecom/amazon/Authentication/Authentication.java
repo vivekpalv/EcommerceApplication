@@ -4,7 +4,10 @@ import com.ecom.amazon.Authentication.AuthDTO.LoginCustomerDTO;
 import com.ecom.amazon.Authentication.AuthDTO.SignUpCustomerDTO;
 import com.ecom.amazon.Authentication.AuthDTO.SignUpVendorDTO;
 import com.ecom.amazon.Entity.Customer;
+import com.ecom.amazon.Entity.Vendor;
 import com.ecom.amazon.Service.CustomerService;
+import com.ecom.amazon.Service.VendorService;
+import com.ecom.amazon.Utility.ErrorUtility;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -17,9 +20,11 @@ import java.util.HashMap;
 public class Authentication {
 
     private final CustomerService customerService;
+    private final VendorService vendorService;
 
-    public Authentication(CustomerService customerService) {
+    public Authentication(CustomerService customerService, VendorService vendorService) {
         this.customerService = customerService;
+        this.vendorService = vendorService;
     }
 
     @GetMapping("/test")
@@ -71,15 +76,13 @@ public class Authentication {
     }
 
     @PostMapping("/vendorSignUp")
-    public ResponseEntity<?> vendorSignUp(@Valid @RequestBody SignUpVendorDTO vendorDto, BindingResult result){
+    public ResponseEntity<?> vendorSignUp(@Valid @RequestBody SignUpVendorDTO vendorDto, BindingResult result) {
 
-        if (result.hasErrors()){
-            HashMap<String, Object> errorHashMap = new HashMap<>();
-            result.getFieldErrors().forEach(fieldError -> {errorHashMap.put(fieldError.getField(), fieldError.getDefaultMessage()); });
-            return ResponseEntity.badRequest().body(errorHashMap);
-        }
+        if (result.hasErrors()){ return ErrorUtility.errorResponse(result); }
 
         System.out.println("SignUpVendorDTO: " + vendorDto);
+
+        Vendor createdVendor = vendorService.createVendor(vendorDto);
 
         return ResponseEntity.ok("vendor created successfully");
     }

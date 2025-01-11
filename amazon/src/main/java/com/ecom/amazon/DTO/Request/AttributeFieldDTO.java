@@ -1,19 +1,9 @@
-package com.ecom.amazon.Entity.Embeded;
+package com.ecom.amazon.DTO.Request;
 
-import jakarta.persistence.Embeddable;
+public class AttributeFieldDTO {
 
-@Embeddable
-public class AttributeField {
     private String fieldKey;
     private String fieldValue;
-
-    public AttributeField() {
-    }
-
-    public AttributeField(String fieldKey, String fieldValue) {
-        this.fieldKey = fieldKey;
-        this.fieldValue = fieldValue;
-    }
 
     public String getFieldKey() {
         return fieldKey;
@@ -33,7 +23,7 @@ public class AttributeField {
 
     @Override
     public String toString() {
-        return "AttributeField{" +
+        return "AttributeFieldDTO{" +
                 "fieldKey='" + fieldKey + '\'' +
                 ", fieldValue='" + fieldValue + '\'' +
                 '}';

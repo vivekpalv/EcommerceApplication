@@ -23,24 +23,44 @@ public class Product {
     @Column(nullable = false)
     private BigDecimal price;
 
+    private int quantity;
+
     @OneToMany(cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Attribute> attributes = new ArrayList<>();
 
-    @ManyToOne(cascade = CascadeType.ALL)
+//    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JsonBackReference
     private Vendor vendor;
+
+    @ElementCollection
+    @CollectionTable(name = "product_tags", joinColumns = @JoinColumn(name = "product_id"))
+    private List<String> tags = new ArrayList<>();
 
     //Helpers
 
     public void addAttribute(Attribute attribute){
         this.attributes.add(attribute);
-        attribute.setProduct(this);
+        attribute.setProduct(this); //Ensure Bidirectional relationship
     }
 
     public void removeAttribute(Attribute attribute){
         this.attributes.remove(attribute);
         attribute.setProduct(null); // un-linking the relationship.
+    }
+
+    public void addTag(String tag){
+        this.tags.add(tag);
+    }
+
+    public void removeTag(String tag){
+        this.tags.remove(tag);
+    }
+
+    public void removeVendor(Vendor vendor){
+        this.vendor = null;
+        vendor.getProducts().remove(this); //Ensure Bidirectional relationship
     }
 
     //Getters
@@ -73,6 +93,14 @@ public class Product {
         return price;
     }
 
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
     //Setters
 
     public void setTitle(String title) {
@@ -93,5 +121,9 @@ public class Product {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }

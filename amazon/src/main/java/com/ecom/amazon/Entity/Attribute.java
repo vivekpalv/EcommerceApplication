@@ -71,4 +71,14 @@ public class Attribute {
     public void setProduct(Product product) {
         this.product = product;
     }
+
+    @Override
+    public String toString() {
+        return "Attribute{" +
+                "id=" + id +
+                ", fields=" + fields +
+                ", price=" + price +
+                ", product=" + product +
+                '}';
+    }
 }

@@ -1,5 +1,6 @@
 package com.ecom.amazon.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -13,7 +14,11 @@ public class OrderedProduct {
     @ManyToOne(cascade = CascadeType.ALL)
     private Product product;
 
+    @ManyToOne
+    private Vendor vendor;
+
     @ManyToOne(cascade = CascadeType.ALL)
+    @JsonBackReference
     private Order order;
 
     @Column(nullable = false)
@@ -25,7 +30,8 @@ public class OrderedProduct {
     private int orderedQuantity; // there is no precision issue with data type which store whole numbers
 
     @ManyToOne(cascade = CascadeType.ALL)
-    private Attribute attribute;
+    @JsonBackReference
+    private Attribute attribute;  // selected attribute while ordering
 
     public long getId() {
         return id;
@@ -55,6 +61,10 @@ public class OrderedProduct {
         return attribute;
     }
 
+    public Vendor getVendor() {
+        return vendor;
+    }
+
     public void setProduct(Product product) {
         this.product = product;
     }
@@ -77,5 +87,9 @@ public class OrderedProduct {
 
     public void setAttribute(Attribute attribute) {
         this.attribute = attribute;
+    }
+
+    public void setVendor(Vendor vendor) {
+        this.vendor = vendor;
     }
 }

@@ -3,6 +3,7 @@ package com.ecom.amazon.Service;
 import com.ecom.amazon.DTO.Request.AddCustomerAddressDTO;
 import com.ecom.amazon.Entity.Address;
 import com.ecom.amazon.Entity.Customer;
+import com.ecom.amazon.Entity.OrderedProduct;
 import com.ecom.amazon.Repository.AddressRepository;
 import com.ecom.amazon.Repository.CustomerRepository;
 import org.springframework.stereotype.Service;
@@ -37,5 +38,10 @@ public class AddressService {
 //        Address savedAddress = addressRepository.save(address); // it will save address details 'again' in address table (so, in short if we use 'customerRepository.save(customer)' and 'addressRepository.save(address)' both then, address details will save twice in 'address table')
 
         return customerWithSaveAddress.getAddresses();
+    }
+
+    public Address getAddress(OrderedProduct orderedProduct) {
+        Address address = orderedProduct.getOrder().getAddress();
+        return addressRepository.findById(address.getId()).orElseThrow(() -> new RuntimeException("Address not found"));
     }
 }

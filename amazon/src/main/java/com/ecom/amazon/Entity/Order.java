@@ -1,6 +1,7 @@
 package com.ecom.amazon.Entity;
 
 import com.ecom.amazon.Enum.OrderStatus;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -19,17 +20,25 @@ public class Order {
     @Column(nullable = false)
     private BigDecimal totalAmount;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<OrderedProduct> orderedProducts = new ArrayList<>();
 
-    @OneToOne
+    @ManyToOne
     private Address address;
 
-    @OneToOne
+    @ManyToOne
+    @JsonManagedReference
     private Customer customer;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
+
+    //Helpers
+    public void addOrderedProduct(OrderedProduct orderedProduct){
+        this.orderedProducts.add(orderedProduct);
+        orderedProduct.setOrder(this); // Ensure Bidirectional relationship
+    }
 
     public long getId() {
         return id;

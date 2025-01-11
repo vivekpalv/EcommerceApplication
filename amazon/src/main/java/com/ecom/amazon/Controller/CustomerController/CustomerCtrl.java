@@ -1,4 +1,4 @@
-package com.ecom.amazon.UserController;
+package com.ecom.amazon.Controller.CustomerController;
 
 import com.ecom.amazon.DTO.Request.AddCustomerAddressDTO;
 import com.ecom.amazon.Entity.Address;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/customer")
