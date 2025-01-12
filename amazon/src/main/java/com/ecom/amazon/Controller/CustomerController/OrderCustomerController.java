@@ -25,11 +25,18 @@ public class OrderCustomerController {
         this.customerService = customerService;
     }
 
-        @PostMapping("/createOrderWithCart")
-    public ResponseEntity<?> createOrderWithCart(){
-        Customer currentCustomer = customerService.testCustomer();
-            Address address = customerService.testCustomer().getAddresses().get(0);
-            Order createdOrder = orderService.createOderWithCart(currentCustomer, address);
+    @PostMapping("/createOrderWithCart")
+    public ResponseEntity<?> createOrderWithCart() {
+        Customer currentCustomer = customerService.currentLoggedInCustomer();
+
+        System.out.println("currentCustomer: "+currentCustomer.toString());
+
+        if (currentCustomer.getCart().getCartProducts().isEmpty()) { return ResponseEntity.badRequest().body("Cart is empty"); }
+        if (currentCustomer.getAddresses().isEmpty()) { return ResponseEntity.badRequest().body("Please add address first"); }
+
+        Address address = currentCustomer.getAddresses().get(0);
+
+        Order createdOrder = orderService.createOderWithCart(currentCustomer, address);
         return ResponseEntity.ok(createdOrder);
     }
 }

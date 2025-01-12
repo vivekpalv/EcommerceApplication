@@ -5,11 +5,14 @@ import com.ecom.amazon.Authentication.AuthDTO.SignUpCustomerDTO;
 import com.ecom.amazon.Authentication.AuthDTO.SignUpVendorDTO;
 import com.ecom.amazon.Entity.Customer;
 import com.ecom.amazon.Entity.Vendor;
+import com.ecom.amazon.Jwt.JwtUtility;
 import com.ecom.amazon.Service.CustomerService;
 import com.ecom.amazon.Service.VendorService;
 import com.ecom.amazon.Utility.ErrorUtility;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,10 +24,14 @@ public class Authentication {
 
     private final CustomerService customerService;
     private final VendorService vendorService;
+    private final JwtUtility jwtUtility;
+    private final AuthenticationManager authenticationManager;
 
-    public Authentication(CustomerService customerService, VendorService vendorService) {
+    public Authentication(CustomerService customerService, VendorService vendorService, JwtUtility jwtUtility, AuthenticationManager authenticationManager) {
         this.customerService = customerService;
         this.vendorService = vendorService;
+        this.jwtUtility = jwtUtility;
+        this.authenticationManager = authenticationManager;
     }
 
     @GetMapping("/test")
@@ -34,19 +41,16 @@ public class Authentication {
 
     @PostMapping("/signUp")
     public ResponseEntity<?> signUp(@Valid @RequestBody SignUpCustomerDTO signUpDto, BindingResult result) {
-        if (result.hasErrors()) {
-//            return ResponseEntity.badRequest().body(result.getAllErrors());
-            HashMap<String, Object> errorHashMap = new HashMap<>();
-            result.getFieldErrors().forEach(fieldError -> { errorHashMap.put(fieldError.getField(), fieldError.getDefaultMessage()); });
-            return ResponseEntity.badRequest().body(errorHashMap);
-        }
+
+        if (result.hasErrors()) { return ErrorUtility.errorResponse(result); }
+
+        System.out.println("dto data: "+signUpDto);
 
         boolean userExistByEmail = customerService.isUserExistByEmail(signUpDto.getEmail());
         if (userExistByEmail){
             return ResponseEntity.badRequest().body("User already exist");
         }
 
-        System.out.println("dto data: "+signUpDto);
         Customer customer = customerService.createCustomer(signUpDto);
         System.out.println("entity data: "+customer);
 
@@ -56,23 +60,22 @@ public class Authentication {
     @PostMapping("/loginCustomer")
     public ResponseEntity<?> customerLogin(@Valid @RequestBody LoginCustomerDTO loginDto, BindingResult result){
 
-        if (result.hasErrors()) {
-            HashMap<String, Object> errorHashMap = new HashMap<>();
-            result.getFieldErrors().forEach(fieldError -> { errorHashMap.put(fieldError.getField(), fieldError.getDefaultMessage()); });
-            return ResponseEntity.badRequest().body(errorHashMap);
-        }
-
         System.out.println("dto data: "+loginDto);
 
-        Customer customer = customerService.customerLogin(loginDto);
+        if (result.hasErrors()) { return ErrorUtility.errorResponse(result); }
 
-        System.out.println("entity data: "+customer);
+        try {
+            org.springframework.security.core.Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));
+            System.out.println("is authenticated: "+authenticate.isAuthenticated());
 
-        if (customer == null){
-            return ResponseEntity.badRequest().body("Login failed");
+            Customer customer = customerService.getCustomerByEmail(loginDto.getEmail());
+
+            String token = jwtUtility.generateToken(customer.getEmail(), customer.getRole());
+
+            return ResponseEntity.ok(token);
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body("Login failed because of "+ e.getMessage());
         }
-
-        return ResponseEntity.ok(customer);
     }
 
     @PostMapping("/vendorSignUp")
@@ -84,6 +87,8 @@ public class Authentication {
 
         Vendor createdVendor = vendorService.createVendor(vendorDto);
 
-        return ResponseEntity.ok("vendor created successfully");
+        String token = jwtUtility.generateToken(createdVendor.getEmail(), createdVendor.getRole());
+
+        return ResponseEntity.ok("vendor created successfully token: "+token);
     }
 }

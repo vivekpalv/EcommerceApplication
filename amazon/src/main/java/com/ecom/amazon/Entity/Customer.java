@@ -35,7 +35,7 @@ public class Customer {
     private Wishlist wishlist;
 
     @Enumerated(EnumType.STRING)
-    private ROLE role = ROLE.CUSTOMER;
+    private ROLE role = ROLE.ROLE_CUSTOMER;
 
     @PrePersist
     public void prePersist() {
@@ -89,8 +89,8 @@ public class Customer {
         return cart;
     }
 
-    public ROLE getRole() {
-        return role;
+    public String getRole() {
+        return role.name();
     }
 
     public void setName(String name) {

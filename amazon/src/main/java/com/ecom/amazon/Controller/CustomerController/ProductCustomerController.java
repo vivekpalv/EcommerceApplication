@@ -39,7 +39,7 @@ public class ProductCustomerController {
 
         if (productId == null || attributeId == null || quantity <= 0) { return ResponseEntity.badRequest().body("Invalid request"); }
 
-        Customer currentCustomer = customerService.testCustomer();
+        Customer currentCustomer = customerService.currentLoggedInCustomer();
         Product product = productService.getProduct(productId, attributeId);
         Attribute attribute = attributeService.getAttribute(attributeId);
         Cart cart = cartService.addProductToCart(currentCustomer, product, attribute, quantity);
@@ -52,7 +52,7 @@ public class ProductCustomerController {
 
         if (cartProductId == null) { return ResponseEntity.badRequest().body("Invalid request"); }
 
-        Customer currentCustomer = customerService.testCustomer();
+        Customer currentCustomer = customerService.currentLoggedInCustomer();
         CartProduct cartProduct = cartService.getCartProduct(cartProductId);
         Cart cart = cartService.removeProductFromCart(currentCustomer, cartProduct);
 

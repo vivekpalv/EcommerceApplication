@@ -13,7 +13,7 @@ public class Admin {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private ROLE role = ROLE.ADMIN;
+    private ROLE role = ROLE.ROLE_ADMIN;
 
 
     //Getters

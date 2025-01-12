@@ -21,7 +21,7 @@ public class Vendor {
     private String gst;
 
     @Enumerated(EnumType.STRING)
-    private ROLE role = ROLE.VENDOR;
+    private ROLE role = ROLE.ROLE_VENDOR;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JsonManagedReference
@@ -70,6 +70,10 @@ public class Vendor {
 
     public List<Product> getProducts() {
         return products;
+    }
+
+    public String getRole() {
+        return role.name(); //returning role as string
     }
 
     public void setName(String name) {

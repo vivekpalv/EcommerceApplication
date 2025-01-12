@@ -1,7 +1,7 @@
 package com.ecom.amazon.Enum;
 
 public enum ROLE {
-    CUSTOMER,
-    VENDOR,
-    ADMIN
+    ROLE_CUSTOMER,
+    ROLE_VENDOR,
+    ROLE_ADMIN
 }
