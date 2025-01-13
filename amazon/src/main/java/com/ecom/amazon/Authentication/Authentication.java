@@ -95,9 +95,6 @@ public class Authentication {
         try {
             Vendor vendor = vendorService.loginVendor(email, password);
 
-//            org.springframework.security.core.Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
-//            System.out.println("authenticate: "+authenticate.getCredentials());
-
             String token = jwtUtility.generateToken(vendor.getEmail(), vendor.getRole());
 
             return ResponseEntity.ok(token);
