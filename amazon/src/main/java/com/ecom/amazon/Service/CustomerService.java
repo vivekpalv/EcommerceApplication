@@ -66,7 +66,7 @@ public class CustomerService {
 
         if (authentication != null) {
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-            System.out.println("customUserDetails: "+customUserDetails.toString());
+            System.out.println("customUserDetails: "+customUserDetails);
 
             String username = customUserDetails.getUsername();
             System.out.println("username: "+username);
