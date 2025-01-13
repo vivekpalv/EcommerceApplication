@@ -28,6 +28,10 @@ public class JwtUtility {
         return extractClaim(token, Claims::getSubject);
     }
 
+    public String extractRole(String token) {
+        return (String) extractClaim(token, claims -> claims.get("role"));
+    }
+
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);

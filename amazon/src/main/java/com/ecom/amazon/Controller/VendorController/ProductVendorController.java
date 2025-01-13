@@ -31,18 +31,12 @@ public class ProductVendorController {
 
         System.out.println("product dto: " + productDTO.toString());
 
-        Vendor currentVendor = vendorService.currentVendor();
+        Vendor currentVendor = vendorService.currentLoggedInVendor();
         Product product = productService.createProduct(productDTO, currentVendor);
 
         System.out.println("created product: " + product.toString());
-        Vendor currentVendor1 = vendorService.currentVendor();
+        Vendor currentVendor1 = vendorService.currentLoggedInVendor();
 
         return ResponseEntity.ok(currentVendor1);
-    }
-
-    @GetMapping("/testVendor")
-    public ResponseEntity<?> getVendor(){
-        Vendor currentVendor = vendorService.currentVendor();
-        return ResponseEntity.ok(currentVendor);
     }
 }

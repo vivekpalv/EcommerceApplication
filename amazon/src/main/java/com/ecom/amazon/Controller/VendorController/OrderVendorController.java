@@ -31,7 +31,7 @@ public class OrderVendorController {
 
     @GetMapping("/getOrders")
     public ResponseEntity<?> vendorOrders(){
-        Vendor currentVendor = vendorService.currentVendor();
+        Vendor currentVendor = vendorService.currentLoggedInVendor();
         List<OrderedProduct> allVendorOrderProducts = orderService.getAllVendorOrderProducts(currentVendor);
         Address address = addressService.getAddress(allVendorOrderProducts.getFirst());
         Customer customer = address.getCustomer();

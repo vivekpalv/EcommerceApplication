@@ -16,8 +16,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-
 @RestController
 @RequestMapping("/authentication")
 public class Authentication {
@@ -39,7 +37,7 @@ public class Authentication {
         return ResponseEntity.ok("Tested successfully");
     }
 
-    @PostMapping("/signUp")
+    @PostMapping("/customerSignUp")
     public ResponseEntity<?> signUp(@Valid @RequestBody SignUpCustomerDTO signUpDto, BindingResult result) {
 
         if (result.hasErrors()) { return ErrorUtility.errorResponse(result); }
@@ -65,16 +63,13 @@ public class Authentication {
         if (result.hasErrors()) { return ErrorUtility.errorResponse(result); }
 
         try {
-            org.springframework.security.core.Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));
-            System.out.println("is authenticated: "+authenticate.isAuthenticated());
-
-            Customer customer = customerService.getCustomerByEmail(loginDto.getEmail());
+            Customer customer = customerService.customerLogin(loginDto);
 
             String token = jwtUtility.generateToken(customer.getEmail(), customer.getRole());
 
             return ResponseEntity.ok(token);
         }catch (Exception e){
-            return ResponseEntity.badRequest().body("Login failed because of "+ e.getMessage());
+            return ResponseEntity.badRequest().body("Customer login failed because of "+ e.getMessage());
         }
     }
 
@@ -90,5 +85,21 @@ public class Authentication {
         String token = jwtUtility.generateToken(createdVendor.getEmail(), createdVendor.getRole());
 
         return ResponseEntity.ok("vendor created successfully token: "+token);
+    }
+
+    @GetMapping("/loginVendor")
+    public ResponseEntity<?> loginVendor(@RequestParam String email, @RequestParam String password) {
+
+        if (email == null || password == null) {return ResponseEntity.badRequest().body("Email or password is missing");}
+
+        try {
+            Vendor vendor = vendorService.loginVendor(email, password);
+
+            String token = jwtUtility.generateToken(vendor.getEmail(), vendor.getRole());
+
+            return ResponseEntity.ok(token);
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body("Vendor login failed because of "+ e.getMessage());
+        }
     }
 }

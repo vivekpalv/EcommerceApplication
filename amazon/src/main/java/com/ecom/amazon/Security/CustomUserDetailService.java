@@ -25,12 +25,35 @@ public class CustomUserDetailService implements UserDetailsService {
         Vendor vendorByEmail = vendorRepository.findFirstByEmail(username);
         Customer customerByEmail = customerRepository.findFirstByEmail(username);
 
+        if (vendorByEmail != null && customerByEmail != null) {
+            System.out.println("inside loadUserByUsername() of CustomUserDetailService class | vendor and customer both exist with same email: "+ username);
+        }
+
 
         if (vendorByEmail != null) {
-            System.out.println("vendor: role"+ vendorByEmail.getRole());
+            System.out.println("inside loadUserByUsername() of CustomUserDetailService class | vendor role: "+ vendorByEmail.getRole());
             return new CustomUserDetails(vendorByEmail.getEmail(), vendorByEmail.getPassword(), vendorByEmail.getRole());
         } else if (customerByEmail != null) {
-            System.out.println("customer: role"+ customerByEmail.getRole());
+            System.out.println("inside loadUserByUsername() of CustomUserDetailService class | customer role: "+ customerByEmail.getRole());
+            return new CustomUserDetails(customerByEmail.getEmail(), customerByEmail.getPassword(), customerByEmail.getRole());
+        }
+
+        throw new UsernameNotFoundException("User not found with email: " + username);
+    }
+
+    public UserDetails loadUserByUsernameAndRole(String username, String role) throws UsernameNotFoundException {
+        Vendor vendorByEmail = vendorRepository.findFirstByEmail(username);
+        Customer customerByEmail = customerRepository.findFirstByEmail(username);
+
+        if (vendorByEmail != null && customerByEmail != null) {
+            System.out.println("inside loadUserByUsernameAndRole() of CustomUserDetailService class | vendor and customer both exist with same email: "+ username);
+        }
+
+        if (vendorByEmail != null && vendorByEmail.getRole().equals(role)) {
+            System.out.println("inside loadUserByUsernameAndRole() of CustomUserDetailService class | vendor role: "+ vendorByEmail.getRole());
+            return new CustomUserDetails(vendorByEmail.getEmail(), vendorByEmail.getPassword(), vendorByEmail.getRole());
+        } else if (customerByEmail != null && customerByEmail.getRole().equals(role)) {
+            System.out.println("inside loadUserByUsernameAndRole() of CustomUserDetailService class | customer role: "+ customerByEmail.getRole());
             return new CustomUserDetails(customerByEmail.getEmail(), customerByEmail.getPassword(), customerByEmail.getRole());
         }
 
